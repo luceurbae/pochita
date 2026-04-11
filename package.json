@@ -1,0 +1,9 @@
+{
+  "name": "pochita",
+  "version": "1.0.0",
+  "description": "Pochita - AI-Powered Polymarket BTC 5m Backtest Skill",
+  "dependencies": {
+    "@openrouter/sdk": "^0.11.2",
+    "playwright": "^1.59.1"
+  }
+}

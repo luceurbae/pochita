@@ -1,0 +1,13 @@
+node_modules/
+.git/
+.env
+.env.*
+logs/
+*.log
+*.pid
+ai-reasoning.txt
+finalize-qwen-inst.txt
+backtest.txt
+assets/backtest.txt
+scripts/auto-loop-state.json
+scripts/rolling-state.json
