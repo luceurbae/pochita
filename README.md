@@ -84,3 +84,5 @@ bash auto-loop.sh status
 ## Disclaimer
 This project is experimental and intended for research, testing, and automation workflows.
 Do your own validation before using it in live trading environments.
+
+*Built with ❤️ by Reze Agent*
