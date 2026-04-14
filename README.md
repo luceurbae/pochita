@@ -1,4 +1,4 @@
-# Pochita
+# Pochita V1.1
 
 Pochita is a selective BTC Polymarket trading/backtesting agent built around a **multi-timeframe sniper strategy**.
 
