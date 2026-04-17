@@ -156,6 +156,18 @@ try {
   memory = fs.readFileSync(path.join(here, '../strategy_memory.md'), 'utf8');
 } catch (e) { memory = 'No past lessons yet.'; }
 
+// Get historical performance for AI context
+let performanceContext = '';
+try {
+  const perfScript = path.join(here, 'get-historical-performance.js');
+  const { execSync } = await import('child_process');
+  const perfOutput = execSync(`node ${perfScript} 2>/dev/null`, { encoding: 'utf8', timeout: 10000 });
+  const perfData = JSON.parse(perfOutput);
+  performanceContext = perfData.insight;
+} catch (e) {
+  performanceContext = 'No historical data available.';
+}
+
 const buyPressurePct = binanceData.depthRatio * 100;
 const hardSkipReasons = [];
 
@@ -210,6 +222,10 @@ RULE ENGINE SUMMARY:
 HARD SKIP REASONS:
 ${hardSkipReasons.length ? hardSkipReasons.map(r => `- ${r}`).join('\n') : '- None'}
 
+## 📊 HISTORICAL PERFORMANCE CONTEXT:
+(Harness this data to improve predictions)
+${performanceContext || 'No historical data available yet.'}
+
 RULE BIAS:
 - Setup Type: ${setupType}
 - Rule Bias: ${ruleBias}
@@ -242,12 +258,18 @@ Instructions:
 1. Respect hard skip conditions.
 2. Only return UP or DOWN if the setup is clear and high quality.
 3. Use this conviction scale:
-   - 90-100 = A+ setup
-   - 80-89 = A setup
-   - 75-79 = B setup
-   - below 75 = no trade
-4. Your prediction must align with RULE BIAS. If your view conflicts with RULE BIAS, return SKIP.
-5. If hard skip reasons exist and they are serious, prefer SKIP.
+   - 90-100 = A+ setup — ONLY THESE ARE ALLOWED
+   - 80-89 = A setup — DISALLOWED
+   - 75-79 = B setup — DISALLOWED
+   - below 90 = NO TRADE — return SKIP
+4. ⚠️ TREND ALIGNMENT RULE (v1.5):
+   - Only predict UP if 15m trend is UP
+   - Only predict DOWN if 15m trend is DOWN
+   - If your prediction conflicts with 15m trend, return SKIP
+5. ⚠️ PRICE FILTER (v1.5):
+   - If price to beat is BELOW $0.50, return SKIP (low price = trap)
+6. Your prediction must align with RULE BIAS. If your view conflicts with RULE BIAS, return SKIP.
+7. If hard skip reasons exist and they are serious, prefer SKIP.
 
 Respond exactly with:
 PREDIKSI: [UP/DOWN/SKIP]
